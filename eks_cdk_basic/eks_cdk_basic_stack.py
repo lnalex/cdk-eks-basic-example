@@ -7,11 +7,19 @@ class EksCdkBasicStack(core.Stack):
     def __init__(self, scope: core.Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
+        # ============================================
         # Variables
+        # ============================================
+
+        # Existing VPC to lookup
         vpc_id = "vpc-123456"
+
+        # EKS cluster name
         cluster_name = "my-test-cluster"
 
-        # The code that defines your stack goes here
+        # ============================================
+        # Stack resources
+        # ============================================
 
         # Lookup an existing VPC
         # https://docs.aws.amazon.com/cdk/api/latest/python/aws_cdk.aws_ec2/Vpc.html#aws_cdk.aws_ec2.Vpc.from_lookup
@@ -23,6 +31,8 @@ class EksCdkBasicStack(core.Stack):
             cluster_name=cluster_name,
             version=eks.KubernetesVersion.V1_20,
             vpc=vpc,
+            # Don't add default worker nodes
+            default_capacity=0,
 
             # Private endpoints only
             # https://docs.aws.amazon.com/cdk/api/latest/python/aws_cdk.aws_eks/EndpointAccess.html#aws_cdk.aws_eks.EndpointAccess
@@ -35,8 +45,3 @@ class EksCdkBasicStack(core.Stack):
                 subnet_type=ec2.SubnetType.PRIVATE
             )]
         )
-
-        # Add tagging
-        # https://docs.aws.amazon.com/cdk/latest/guide/tagging.html
-        # https://docs.aws.amazon.com/cdk/api/latest/python/aws_cdk.core/Tags.html
-        core.Tags.of(cluster).add("environment", "dev")
