@@ -49,3 +49,11 @@ class EksCdkBasicStack(core.Stack):
             # https://docs.aws.amazon.com/cdk/api/latest/python/aws_cdk.aws_ec2/SubnetSelection.html#subnetselection
             vpc_subnets=[ec2.SubnetSelection(subnets=subnets)]
         )
+
+        # Create CNI Addon
+        # https://docs.aws.amazon.com/cdk/api/latest/python/aws_cdk.aws_eks/CfnAddon.html
+        cni_addon = eks.CfnAddon(self, "CNIAddon", 
+            addon_name="vpc-cni",
+            addon_version="v1.7.5-eksbuild.2",
+            cluster_name=cluster.cluster_name
+        )
